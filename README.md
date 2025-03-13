@@ -1,7 +1,7 @@
 
 # AES ELITE
 
-Xchacha-poly1305 version of this app is https://github.com/8x8c/AES-elite
+Xchacha-poly1305 version of this app is https://github.com/8x8c/Xchacha20-elite
 
 
 
