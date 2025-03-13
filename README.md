@@ -13,7 +13,7 @@ In memory processing only for reliability. Modern machines have plenty of ram.
 
 
 # Demo Screenshots
-The strongest encryption possible. As a demo, make a file called test.html with all "a" charachters like aaaaaaaaaaaaaaaaaaaaaaaa  
+I will keep the app updated to make the strongest encryption possible. As a demo, make a file called test.html with all "a" charachters like aaaaaaaaaaaaaaaaaaaaaaaa  
 
 then encrypt the file using the password "a"  and open the file in any web browser  and you will be able to see that the  encrypted file will be incredibly random. 
 
