@@ -5,7 +5,10 @@ Read this readme and any file in the /docs directory
 
 The goal- make the best cli AES encryption app possible that is easiest to use and is the most secure, and make it password based. 
 
-usage ./[whatever you named the app] [input file]
+## usage
+
+./[whatever you named the app] [input file]
+
 it will then prompt you for a password. 
 
 encrypts the file in place (overwrites it) 
