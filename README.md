@@ -1,6 +1,7 @@
 
 # AES ELITE
 
+Reat this readme and any file in the /docs directory
 
 The goal- make the best cli AES encryption app possible that is easiest to use and is the most secure, and make it password based. 
 
