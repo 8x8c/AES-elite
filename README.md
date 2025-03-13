@@ -15,6 +15,9 @@ encrypts the file in place (overwrites it)
 
 In memory processing only for reliability. Modern machines have plenty of ram. 
 
+For a gaming computer , like an i900k with 64 gm ram, you can crank up the argon2 settings way up to make the
+passwords about impossible to brute force. 
+
 
 
 # Demo Screenshots
