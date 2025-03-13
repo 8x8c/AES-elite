@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>mysecureapp: README</title>
+    <style>
+        body {
+            margin: 20px auto;
+            max-width: 700px;
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+        }
+        code, pre {
+            background: #f8f8f8;
+            padding: 0.2em 0.4em;
+            font-size: 0.95em;
+        }
+        h1, h2, h3 {
+            margin-top: 1.2em;
+            margin-bottom: 0.8em;
+        }
+        h1 {
+            font-size: 1.8em;
+            margin-bottom: 0.2em;
+        }
+        h2 {
+            font-size: 1.4em;
+        }
+        h3 {
+            font-size: 1.2em;
+        }
+        p, ul {
+            margin-bottom: 1em;
+        }
+        .code-block {
+            background: #f0f0f0;
+            border-left: 3px solid #ccc;
+            padding: 0.5em 1em;
+            margin: 1em 0;
+        }
+        .note {
+            padding: 0.6em;
+            background: #fffae0;
+            border-left: 4px solid #ffd85e;
+            margin: 1em 0;
+        }
+        .warning {
+            padding: 0.6em;
+            background: #ffe6e6;
+            border-left: 4px solid #ff9f9f;
+            margin: 1em 0;
+        }
+        .strong {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<h1>mysecureapp</h1>
+<p>
+    <strong>mysecureapp</strong> is a small command-line tool written in Rust to 
+    provide password-based file encryption and decryption <em>in-place</em>.
+    It leverages <strong>Argon2id</strong> for key derivation and 
+    <strong>AES-256-GCM</strong> for authenticated encryption.
+</p>
+
+<hr>
+
+<h2>1. Overview</h2>
+<p>
+    This application allows you to encrypt a file <em>in-place</em> using only a 
+    password (no separate key file). If the file is not detected as encrypted, 
+    it automatically encrypts it. If the file is already encrypted (detected by 
+    a magic header), it automatically decrypts it — all with a single command.
+</p>
+<p>
+    Internally, <strong>mysecureapp</strong> uses:
+</p>
+<ul>
+    <li><strong>Argon2id</strong> for deriving a 256-bit key from your password 
+        and a randomly generated salt. Argon2id is a <em>memory-hard</em> 
+        password hashing algorithm designed to resist brute-force attacks on 
+        modern hardware.</li>
+    <li><strong>AES-256-GCM</strong>, which provides both confidentiality 
+        (encryption) and integrity (authentication). GCM mode ensures any 
+        tampering with ciphertext is detected.</li>
+    <li><strong>Atomic file overwrite</strong> by writing to a temporary file 
+        then renaming, to reduce the chance of corrupting your data on crashes 
+        or failures.</li>
+</ul>
+
+<h2>2. Requirements</h2>
+<ul>
+    <li>Rust (latest stable or recent versions recommended)</li>
+    <li>The following crates/libraries: <code>aes-gcm</code>, <code>argon2</code>, 
+        <code>rand</code>, <code>anyhow</code>, <code>clap</code>, 
+        <code>rpassword</code>, and <code>zeroize</code>.</li>
+</ul>
+<p>You can fetch all of them automatically when building with <code>cargo</code>.</p>
+
+<h2>3. Installation</h2>
+<div class="code-block">
+<pre><code># Clone the repository
+git clone https://github.com/yourusername/mysecureapp.git
+
+# Move into the cloned directory
+cd mysecureapp
+
+# Build the application
+cargo build --release
+
+# The compiled binary will be in the "target/release" folder
+ls target/release/mysecureapp
+</code></pre>
+</div>
+<p>
+    Adjust the repository link or directory paths to match your setup. 
+    After building, you can copy the <code>mysecureapp</code> binary anywhere 
+    in your <code>PATH</code>.
+</p>
+
+<h2>4. Usage</h2>
+<p>
+    <strong>mysecureapp</strong> expects exactly one argument: the path to 
+    the file you want to encrypt or decrypt in-place.
+</p>
+<div class="code-block">
+<pre><code>Usage:
+    ./mysecureapp &lt;file&gt;
+</code></pre>
+</div>
+
+<p>
+    If the file does <em>not</em> start with the magic header, the program 
+    assumes it is plaintext and <strong>encrypts</strong> it:
+</p>
+<div class="code-block">
+<pre><code>./mysecureapp secrets.txt
+</code></pre>
+</div>
+<p>
+    You will be prompted for a password <strong>twice</strong> (to confirm 
+    correctness). Afterwards, <code>secrets.txt</code> is overwritten with 
+    encrypted data.
+</p>
+
+<p>
+    If the file <em>does</em> start with the magic header (meaning it was 
+    previously encrypted by <strong>mysecureapp</strong>), the program 
+    automatically attempts to <strong>decrypt</strong> it:
+</p>
+<div class="code-block">
+<pre><code>./mysecureapp secrets.txt
+</code></pre>
+</div>
+<p>
+    Now you are prompted for the password <strong>once</strong>. If it is 
+    correct (and the file is not corrupted), the file is overwritten with 
+    the original plaintext.
+</p>
+
+<h3>4.1. Atomic Overwrite</h3>
+<p>
+    <strong>mysecureapp</strong> uses a "temp file + rename" process, so if 
+    something goes wrong mid-write, your original file is less likely to be 
+    permanently corrupted. Once the encryption or decryption finishes 
+    successfully, the temp file replaces the original.
+</p>
+
+<h2>5. Password Security</h2>
+<p>
+    Since <strong>mysecureapp</strong> is <em>password-based</em>, the overall 
+    security strongly depends on the strength of your chosen password. Argon2id 
+    helps slow down brute-force attempts, but a <em>very weak</em> password can 
+    still be guessed offline given enough time.
+</p>
+
+<h3>5.1 Recommended Password Length</h3>
+<p>
+    We recommend a password of <strong>at least 12-16 characters</strong>, 
+    but ideally <strong>20+ characters</strong> for improved security. 
+    If possible, use a passphrase (several random words) or a random 
+    string generated by a password manager.
+</p>
+<p>
+    <em>Example:</em> 
+    <code>trouble-sunken-hamster-92-coffee</code> 
+    or 
+    <code>Nc93&#64;fKpB01_!n7</code>.
+</p>
+
+<div class="note">
+    <strong>Note:</strong> Even with Argon2id, a short or dictionary-based 
+    password is still vulnerable to offline cracking attacks. Always choose 
+    something high-entropy.
+</div>
+
+<h3>5.2 Offline Attacks</h3>
+<p>
+    An attacker only needs a copy of your <strong>encrypted file</strong> to 
+    attempt offline guesses. They can run Argon2id on GPU clusters or 
+    specialized hardware. While Argon2id is significantly stronger 
+    (memory-hard) than traditional key-stretching, it cannot fully compensate 
+    for very weak passwords. 
+</p>
+
+<h2>6. Internals</h2>
+<ul>
+    <li><strong>Argon2id</strong> with parameters: 64 MB memory, 3 passes, 
+        4 parallel lanes, output length of 32 bytes (AES key size).</li>
+    <li><strong>AES-256-GCM</strong>: A 256-bit key with a 12-byte random nonce. 
+        The ciphertext includes an authentication tag to detect tampering.</li>
+    <li>
+        <strong>Magic header:</strong> 8-byte prefix (<code>MYENCAPP</code>) 
+        used to distinguish between encrypted and non-encrypted files.
+    </li>
+    <li>
+        <strong>Zeroization:</strong> The code calls <code>zeroize()</code> to 
+        wipe sensitive data (password, derived key, salt, nonce) from memory 
+        once they are no longer needed.
+    </li>
+</ul>
+
+<h2>7. Example Workflow</h2>
+<ol>
+    <li><strong>Encryption</strong>: Suppose you have a plaintext file 
+        <code>passwords.txt</code>.
+        <ul>
+            <li>Run <code>./mysecureapp passwords.txt</code></li>
+            <li>Enter a strong password twice.</li>
+            <li>The file is now overwritten with AES-GCM ciphertext containing 
+                the magic header, random salt, and random nonce.</li>
+        </ul>
+    </li>
+    <li><strong>Decryption</strong>: The file is recognized as encrypted by 
+        the magic header.
+        <ul>
+            <li>Run <code>./mysecureapp passwords.txt</code> again.</li>
+            <li>Enter the same password once.</li>
+            <li>The tool decrypts in memory, verifies integrity, and overwrites 
+                the file with the original plaintext.</li>
+        </ul>
+    </li>
+</ol>
+
+<h2>8. Security Disclaimer</h2>
+<div class="warning">
+    <strong>WARNING:</strong> <em>mysecureapp</em> has not undergone a formal 
+    cryptographic audit. Use at your own risk and be sure to test thoroughly. 
+    No encryption tool can guarantee security if your system is compromised or 
+    if you use a weak password.
+</div>
+<p>
+    Always store backups, maintain proper system security, and use a robust 
+    password manager or passphrase strategy. 
+</p>
+
+<h2>9.In memory </h2>
+<p>
+   This does not use chunk based processing, it does everything in memory. Modern machines and devices often have enough ram so this is not an issue. Processing in memory is less error prone than chunk based processing. For older devices with very little ram, you are expected to know your hardware limits and encrypt files lesser size than your free ram. 
+</p>
+
+
+
+</body>
+</html>
+

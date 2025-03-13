@@ -1,0 +1,14 @@
+[package]
+name = "mysecureapp"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = "1.0"
+clap = "4"          # or a similar 4.x version
+rpassword = "7"
+aes-gcm = "0.10"
+argon2 = "0.5"
+rand = "0.9"
+zeroize = "1.8"
+
