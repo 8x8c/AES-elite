@@ -1,6 +1,13 @@
 
 # AES ELITE
 
+Xchacha-poly1305 version of this app is https://github.com/8x8c/AES-elite
+
+
+
+
+
+
 Read this readme and any file in the /docs directory
 
 The goal- make the best cli AES encryption app possible that is easiest to use and is the most secure, and make it password based. 
