@@ -22,5 +22,6 @@ That is the WORST case - just one char as the password. So imagine how good it w
 
 ![1](https://github.com/user-attachments/assets/6810c573-7c80-4234-839e-9c02265ab6e9)
 
+![2](https://github.com/user-attachments/assets/5e787c1b-585d-4036-a009-0aa476fb5da2)
 
-![1](https://github.com/user-attachments/assets/e3a983de-9f1c-4e79-91c9-6c8bcb79c43b)
+
