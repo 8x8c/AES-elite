@@ -25,3 +25,5 @@ That is the WORST case - just one char as the password. So imagine how good it w
 ![2](https://github.com/user-attachments/assets/5e787c1b-585d-4036-a009-0aa476fb5da2)
 
 
+The MYENCAPP that you see at thestart of the cyphertext is the magic header. It is injected into they cyphertext so the app can automatically determine if it should be
+encrypted or decrypted. And with aes the nonce in injected too. SO make sure if your file is an executable, to ZIP it before encrypting. Encrypting/decrypting an executable could possibly change a byte at the start of it, which could make executable not run. So a standard practice is to zip executables for safer encryption. 
